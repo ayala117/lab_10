@@ -1,17 +1,17 @@
 import psycopg2
 import csv
 
-# PostgreSQL-ге қосылу
+
 def connect_db():
     return psycopg2.connect(
-        dbname="postgres",      # Базаның атын өзгертуге болады (мысалы, phonebook)
+        dbname="postgres",     
         user="ayala",
-        password="ayala1234",   # Өз пароліңді орнатқаныңды қолданысқа енгіз
+        password="ayala1234",   
         host="localhost",
         port="5432"
     )
 
-# Кестені құру (егер ол жоқ болса)
+
 def create_table():
     conn = connect_db()
     cursor = conn.cursor()
@@ -27,14 +27,14 @@ def create_table():
     cursor.close()
     conn.close()
 
-# Деректерді CSV файлдан жүктеу
+
 def load_data_from_csv(filename):
     conn = connect_db()
     cursor = conn.cursor()
 
     with open(filename, 'r') as f:
         reader = csv.reader(f)
-        next(reader)  # Егер CSV-де баған атаулары болса, бірінші жолды өткізіп жібереміз
+        next(reader) 
         for row in reader:
             cursor.execute("""
                 INSERT INTO phonebook (name, phone)
@@ -45,7 +45,7 @@ def load_data_from_csv(filename):
     cursor.close()
     conn.close()
 
-# Қолданушыдан деректерді алу және оларды енгізу
+
 def insert_data():
     name = input("Enter name: ")
     phone = input("Enter phone number: ")
@@ -62,7 +62,7 @@ def insert_data():
     cursor.close()
     conn.close()
 
-# Деректерді жаңарту
+
 def update_data():
     name = input("Enter the name of the person to update: ")
     new_name = input("Enter the new name: ")
@@ -81,7 +81,7 @@ def update_data():
     cursor.close()
     conn.close()
 
-# Деректерді сұрыптау (фильтрация)
+
 def query_data():
     filter_name = input("Enter a name to filter: ")
 
@@ -99,8 +99,8 @@ def query_data():
     cursor.close()
     conn.close()
 
-# Деректерді жою
-def delete_data():
+
+    def delete_data():
     name = input("Enter the name or phone number to delete: ")
 
     conn = connect_db()
@@ -115,9 +115,9 @@ def delete_data():
     cursor.close()
     conn.close()
 
-# Негізгі бағдарлама
+
 def main():
-    create_table()  # Кестені жасау
+    create_table()  
 
     while True:
         print("\nPhonebook Menu:")
