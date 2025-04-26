@@ -3,34 +3,34 @@ import random
 import psycopg2
 import pickle
 
-# PostgreSQL-ге қосылу
+
 def connect_db():
     return psycopg2.connect(
-        dbname="postgres",       # Базаның атын өзгертуге болады (мысалы, snake_game)
+        dbname="postgres",       
         user="ayala",
-        password="ayala1234",    # Өз пароліңді орнатқаныңды қолданысқа енгіз
+        password="ayala1234",   
         host="localhost",
         port="5432"
     )
 
-# Ойынның параметрлері
+
 WIDTH, HEIGHT = 640, 480
 SNAKE_SIZE = 10
 SNAKE_SPEED = 15
 
-# Pygame бастауды орнату
+
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Snake Game')
 
-# Түстерді анықтау
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (213, 50, 80)
 GREEN = (0, 255, 0)
 BLUE = (50, 153, 213)
 
-# Қозғалу функциясы
+
 def draw_snake(snake_size, snake_list):
     for x in snake_list:
         pygame.draw.rect(screen, GREEN, [x[0], x[1], snake_size, snake_size])
@@ -42,7 +42,7 @@ def game_over(score):
     pygame.display.update()
     pygame.time.wait(2000)
 
-# Пайдаланушыны сұрау
+
 def get_user():
     conn = connect_db()
     cursor = conn.cursor()
@@ -53,13 +53,13 @@ def get_user():
 
     if user:
         print(f"Welcome back, {username}! Current level: {user[2]}")
-        return username, user[2]  # қайтару username мен current level
+        return username, user[2]  
     else:
         cursor.execute("INSERT INTO users (username, level, score) VALUES (%s, %s, %s) RETURNING id;", (username, 1, 0))
         conn.commit()
         user_id = cursor.fetchone()[0]
         print(f"New user created. Welcome, {username}!")
-        return username, 1  # жаңа пайдаланушы үшін level = 1
+        return username, 1 
 
 def save_game_state(username, level, score):
     conn = connect_db()
@@ -105,7 +105,7 @@ def game_loop():
                     change_to = 'LEFT'
                 if event.key == pygame.K_RIGHT:
                     change_to = 'RIGHT'
-                if event.key == pygame.K_p:  # Pause and save game state
+                if event.key == pygame.K_p:  
                     save_game_state(username, level, score)
                     print("Game paused and state saved.")
 
@@ -158,7 +158,6 @@ def game_loop():
 
     save_game_state(username, level, score)
 
-# Мәліметтер базасын және кестелерді жасау
 def setup_database():
     conn = connect_db()
     cursor = conn.cursor()
@@ -176,8 +175,8 @@ def setup_database():
     cursor.close()
     conn.close()
 
-# Негізгі функция
+
 if __name__ == "__main__":
-    setup_database()  # Базаны құру
-    game_loop()       # Ойынды бастау
+    setup_database() 
+    game_loop()      
     pygame.quit()
